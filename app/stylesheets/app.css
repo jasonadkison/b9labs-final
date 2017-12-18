@@ -1,52 +1,46 @@
 body {
-  margin-left: 25%;
-  margin-right: 25%;
-  margin-top: 10%;
-  font-family: "Open Sans", sans-serif;
+  padding-top: 120px
 }
 
-label {
-  display: inline-block;
-  width: 100px;
+pre {
+  background: #f7f7f9
 }
 
-input {
-  width: 500px;
-  padding: 5px;
-  font-size: 16px;
+.bs-docs-section {
+  margin-top: 4em
 }
 
-button {
-  font-size: 16px;
-  padding: 5px;
+.bs-docs-section .page-header h1 {
+  padding: 2rem 0;
+  font-size: 3rem
 }
 
-h1, h2 {
-  display: inline-block;
-  vertical-align: middle;
-  margin-top: 0px;
-  margin-bottom: 10px;
+.bs-component {
+  position: relative
 }
 
-h2 {
-  color: #AAA;
-  font-size: 32px;
+.bs-component+.bs-component {
+  margin-top: 1rem
 }
 
-h3 {
-  font-weight: normal;
-  color: #AAA;
-  font-size: 24px;
+.bs-component .card {
+  margin-bottom: 1rem
 }
 
-.black {
-  color: black;
+
+@media (max-width: 767px) {
+
+  #banner {
+      margin-bottom: 2em;
+      text-align: center
+  }
 }
 
-#balance {
-  color: black;
+
+h1 small {
+font-size: 0.5em;
 }
 
-.hint {
-  color: #666;
+.bs-component .btn {
+float: right;
 }

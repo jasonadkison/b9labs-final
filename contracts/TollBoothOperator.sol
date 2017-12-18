@@ -18,7 +18,12 @@ contract TollBoothOperator is Pausable, Regulated, DepositHolder, MultiplierHold
 
   mapping(bytes32 => Entry) public entries;
 
-  mapping(bytes32 => bytes32[]) public pendingPayments;
+  struct PendingPayment {
+    bytes32[] hashedSecrets;
+    uint cursor;
+  }
+
+  mapping(bytes32 => PendingPayment) public pendingPayments;
 
   uint totalAccruedFees;
   uint totalWithdrawnFees;
@@ -185,19 +190,20 @@ contract TollBoothOperator is Pausable, Regulated, DepositHolder, MultiplierHold
 
     if (fee <= 0) {
       bytes32 key = getRouteKey(vehicleEntry.entryBooth, msg.sender);
-      pendingPayments[key].push(secretHash);
+      pendingPayments[key].hashedSecrets.push(secretHash);
       LogPendingPayment(secretHash, vehicleEntry.entryBooth, msg.sender);
       return 2;
     }
 
     uint refund = 0;
+    uint deposited = entries[secretHash].depositedWeis;
     entries[secretHash].depositedWeis = 0;
 
-    if (fee < vehicleEntry.depositedWeis) {
-      refund = vehicleEntry.depositedWeis - fee;
+    if (fee < deposited) {
+      refund = deposited - fee;
       vehicleEntry.vehicle.transfer(refund);
     } else {
-      fee = vehicleEntry.depositedWeis;
+      fee = deposited;
     }
 
     LogRoadExited(msg.sender, secretHash, fee, refund);
@@ -218,8 +224,8 @@ contract TollBoothOperator is Pausable, Regulated, DepositHolder, MultiplierHold
   public
   returns (uint count)
   {
-    bytes32 key = getRouteKey(entryBooth, exitBooth);
-    return pendingPayments[key].length;
+    bytes32 routeKey = getRouteKey(entryBooth, exitBooth);
+    return pendingPayments[routeKey].hashedSecrets.length - pendingPayments[routeKey].cursor;
   }
 
   /**
@@ -239,28 +245,31 @@ contract TollBoothOperator is Pausable, Regulated, DepositHolder, MultiplierHold
   public
   returns (bool success)
   {
+    require(count > 0);
     require(isTollBooth(entryBooth));
     require(isTollBooth(exitBooth));
-    bytes32 key = getRouteKey(entryBooth, exitBooth);
-    uint pendingCount = pendingPayments[key].length;
-    require(count > 0);
+    uint pendingCount = getPendingPaymentCount(entryBooth, exitBooth);
     require(pendingCount > 0);
-    require(count >= pendingCount);
+    require(count <= pendingCount);
+
+    bytes32 routeKey = getRouteKey(entryBooth, exitBooth);
 
     for (uint i = 0; i < count; i++) {
-      bytes32 secretHash = pendingPayments[key][i];
+      bytes32 secretHash = pendingPayments[routeKey].hashedSecrets[pendingPayments[routeKey].cursor];
+      pendingPayments[routeKey].cursor += 1;
       Entry storage vehicleEntry = entries[secretHash];
 
       uint fee = getExitFee(entryBooth, exitBooth, vehicleEntry.vehicle);
 
-      entries[secretHash].depositedWeis = 0;
+      uint deposited = vehicleEntry.depositedWeis;
       uint refund = 0;
+      entries[secretHash].depositedWeis = 0;
 
-      if (fee < vehicleEntry.depositedWeis) {
-        refund = vehicleEntry.depositedWeis - fee;
+      if (fee < deposited) {
+        refund = deposited - fee;
         vehicleEntry.vehicle.transfer(refund);
       } else {
-        fee = vehicleEntry.depositedWeis;
+        fee = deposited;
       }
 
       LogRoadExited(exitBooth, secretHash, fee, refund);
@@ -325,19 +334,11 @@ contract TollBoothOperator is Pausable, Regulated, DepositHolder, MultiplierHold
   returns(bool success)
   {
     super.setRoutePrice(entryBooth, exitBooth, priceWeis);
-    bytes32 key = getRouteKey(entryBooth, exitBooth);
-    if (pendingPayments[key].length > 0) {
+    bytes32 routeKey = getRouteKey(entryBooth, exitBooth);
+    if (pendingPayments[routeKey].hashedSecrets.length > 0) {
       clearSomePendingPayments(entryBooth, exitBooth, 1);
     }
     return true;
-  }
-
-  function getRouteKey(address entryBooth, address exitBooth)
-  constant
-  internal
-  returns(bytes32 routeKey)
-  {
-    routeKey = keccak256(entryBooth, exitBooth);
   }
 
   function getExitFee(address entryBooth, address exitBooth, address vehicle)

@@ -44,13 +44,14 @@ contract RoutePriceHolder is Owned, TollBoothHolderI, RoutePriceHolderI {
   public
   returns(bool success)
   {
+    /*
     require(entryBooth != address(0));
     require(exitBooth != address(0));
     require(entryBooth != exitBooth);
     require(isTollBooth(entryBooth));
     require(isTollBooth(exitBooth));
     require(getRoutePrice(entryBooth, exitBooth) != priceWeis);
-
+*/
     bytes32 routeKey = getRouteKey(entryBooth, exitBooth);
     routePrices[routeKey] = priceWeis;
     LogRoutePriceSet(msg.sender, entryBooth, exitBooth, priceWeis);

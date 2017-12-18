@@ -57,5 +57,8 @@ contract MultiplierHolder is Owned, MultiplierHolderI {
   returns(uint multiplier)
   {
     multiplier = multipliers[vehicleType];
+    if (multiplier < 1) {
+      multiplier = 1;
+    }
   }
 }

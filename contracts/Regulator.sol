@@ -73,7 +73,6 @@ contract Regulator is Owned, RegulatorI {
   returns(bool success)
   {
     require(vehicle != address(0));
-    require(vehicleType <= 3);
     require(vehicleTypes[vehicle] != vehicleType);
 
     vehicleTypes[vehicle] = vehicleType;
