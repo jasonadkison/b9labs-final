@@ -23,7 +23,7 @@ class Header extends Component {
         <div className="row">
           <div className="col-md-8">
             <h1>Operator</h1>
-            <p className="lead">Add a new Toll Booth, Base Route Prices and Set Multipliers</p>
+            <p className="lead">Add Toll Booths, Set Base Route Prices and Cost Multipliers</p>
           </div>
           <div className="col-md-4">
             <div className="form-group float-right">

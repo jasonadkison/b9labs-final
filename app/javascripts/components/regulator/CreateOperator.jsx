@@ -35,29 +35,32 @@ class CreateOperator extends Component {
 
     this.setState({ loading: true, error: false, errorText: false });
 
-    RegulatorContractProvider
+    return RegulatorContractProvider
       .contract()
       .deployed()
       .then(instance => instance.createNewOperator(owner, deposit, { gas: 2000000 }))
-      .then(tx => (
-        TollBoothOperatorContractProvider
-          .contract()
-          .at(tx.logs[1].args.newOperator)
-          .then(instance => {
-            return instance.setPaused(false, { from: owner });
-          })
-      ))
-      .then(() => this.setState({...initialState}))
+      .then((tx) => {
+        this.setState({...initialState});
+        return tx.logs[1].args.newOperator;
+      })
+      .then((newOperator) => {
+        return setTimeout(() => {
+          return TollBoothOperatorContractProvider
+            .at(newOperator)
+            .then(instance => instance.setPaused(false, { from: owner }));
+        }, 0);
+      })
       .catch(err => {
         this.setState({ loading: false, error: true, errorText: err.message });
-      });;
+      });
   }
   render() {
     const { operators } = this.props;
     const { owner, deposit, loading, error, errorText } = this.state;
+    const formStyles = loading ? { opacity: 0.35 } : { opacity: 1 };
     return (
       <div className="bs-component">
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit} style={formStyles}>
           <legend>Create Toll Booth Operator</legend>
           <div className="form-group">
             <label htmlFor="selectOwner">Select Owner Address</label>

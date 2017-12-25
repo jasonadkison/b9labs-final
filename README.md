@@ -1,3 +1,22 @@
+# Workflow
+
+    # install dependencies
+    npm install
+
+    # start testrpc
+    testrpc
+
+    # compile and migrate contracts
+    truffle migrate
+
+    # start frontend webpack server
+    npm run dev
+
+    # run tests
+    testrpc
+    truffle test
+
+
 # Step 2
 
 ## Intro
@@ -24,7 +43,7 @@ $ cd this-repo
 # Notice now it is your-repo-code that you need to change
 $ git remote add origin git@git.academy.b9lab.com:YOUR-GROUP/your-repo-code.git
 
-# Populate your 
+# Populate your
 $ git push -u origin master
 ```
 
@@ -309,7 +328,7 @@ A quick note on wording:
 * "a / the deposit" refers to the value that the contract requires from entering vehicles.
 * "what is deposited" means what was actually sent by the vehicle upon entering.
 
-You may create as many tests as you want but we still want you to create tests for the following scenarios. 
+You may create as many tests as you want but we still want you to create tests for the following scenarios.
 
 * Scenario 1:
   * `vehicle1` enters at `booth1` and deposits required amount (say 10).

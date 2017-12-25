@@ -180,7 +180,7 @@ export const stopWatchingForRoadEntered = () => {
 let roadExitedEvent;
 export const watchForRoadExited = (operator) => {
   return (dispatch) => {
-    dispatch({ type: 'REQUEST_ROAD_EXITED_EVENTS' });
+    dispatch({ type: 'REQUEST_ROAD_EXITED_EVENTS', operator });
 
     if (roadExitedEvent) {
       roadExitedEvent.stopWatching();

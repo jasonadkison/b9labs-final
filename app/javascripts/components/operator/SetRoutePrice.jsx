@@ -45,12 +45,13 @@ class SetRoutePrice extends Component {
   render() {
     const { booths } = this.props;
     const { entryBooth, exitBooth, price, loading, error, errorText } = this.state;
+    const formStyles = loading ? { opacity: 0.35 } : { opacity: 1 };
     const entryBooths = booths.filter(booth => booth !== exitBooth);
     const exitBooths = booths.filter(booth => booth !== entryBooth);
 
     return (
       <div className="bs-component">
-        <form onSubmit={this.onSubmitForm}>
+        <form onSubmit={this.onSubmitForm} style={formStyles}>
           <legend>Set Route Pricing</legend>
           <div className="form-group">
             <label htmlFor="entryBooth">Entry Booth Address</label>

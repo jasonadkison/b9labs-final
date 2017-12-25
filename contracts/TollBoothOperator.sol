@@ -343,7 +343,7 @@ contract TollBoothOperator is Pausable, Regulated, DepositHolder, MultiplierHold
 
   function getExitFee(address entryBooth, address exitBooth, address vehicle)
   constant
-  internal
+  public
   returns(uint amount)
   {
     RegulatorI regulator = getRegulator();

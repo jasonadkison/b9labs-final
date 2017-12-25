@@ -66,8 +66,6 @@ class EntryDepositForm extends Component {
         return instance.getVehicleEntry.call(hashedSecret, { from: vehicle });
       })
       .then(vehicleEntry => {
-        console.log('hashedSecret', hashedSecret);
-        console.log('vehicleEntry', vehicleEntry);
         if (vehicleEntry[0] !== '0x0000000000000000000000000000000000000000') {
           throw new Error('Secret already used, please try another.');
         }

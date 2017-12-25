@@ -50,7 +50,7 @@ class SetMultiplier extends Component {
   onSubmitForm = (e) => {
     e.preventDefault();
 
-    const { vehicleType, multiplier, loading, error, errorText } = this.state;
+    const { vehicleType, multiplier, loading, error, errorText, small, medium, large } = this.state;
     const { operator, operatorOwner } = this.props;
 
     if (loading) {
@@ -65,7 +65,7 @@ class SetMultiplier extends Component {
     this.setState({ loading: true, error: false, errorText: '' });
 
     instance.setMultiplier(vehicleType, multiplier, { from: operatorOwner })
-      .then(() => this.setState({...initialState}))
+      .then(() => this.setState({...initialState, small, medium, large}))
       .then(() => this.updateUi())
       .catch(err => {
         this.setState({ loading: false, error: true, errorText: err.message });

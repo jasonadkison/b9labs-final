@@ -41,15 +41,18 @@ class ReportVehicleExit extends Component {
         instance = _instance;
         return instance.reportExitRoad(secret, { from: exitBooth, gas: 3000000 });
       })
-      .then(() => this.setState({...initialState}))
+      .then((tx) => {
+        this.setState({...initialState});
+      })
       .catch(err => this.setState({ loading: false, error: true, errorText: err.message }));
   }
   render() {
     const { exitBooth, secret, loading, error, errorText } = this.state;
+    const formStyles = loading ? { opacity: 0.35 } : { opacity: 1 };
     const { booths } = this.props;
     return (
       <div className="bs-component">
-        <form onSubmit={this.onSubmitForm}>
+        <form onSubmit={this.onSubmitForm} style={formStyles}>
           <legend>Report a Vehicle Exit</legend>
           <div className="form-group">
             <label htmlFor="exitBooth">Exit Booth Address</label>

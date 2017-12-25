@@ -39,9 +39,10 @@ class CreateTollBooth extends Component {
   }
   render() {
     const { booth, loading, error, errorText } = this.state;
+    const formStyles = loading ? { opacity: 0.35 } : { opacity: 1 };
     return (
       <div className="bs-component">
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit} style={formStyles}>
           <legend>Create Toll Booth</legend>
           <div className="form-group">
             <label htmlFor="selectBoothAddress">Choose Booth Address</label>

@@ -34,10 +34,21 @@ class SetVehicleType extends Component {
 
     this.setState({ loading: true, error: false, errorText: false });
 
-    RegulatorContractProvider
+    let instance;
+
+    return RegulatorContractProvider
       .contract()
       .deployed()
-      .then(instance => instance.setVehicleType(vehicleAddress, vehicleType))
+      .then((_instance) => {
+        instance = _instance;
+        return instance.getVehicleType.call(vehicleAddress);
+      })
+      .then((_vehicleType) => {
+        if (_vehicleType.toString(10) === vehicleType) {
+          throw new Error(`Vehicle already registered as type ${vehicleType}.`)
+        }
+        return instance.setVehicleType(vehicleAddress, vehicleType);
+      })
       .then(() => this.setState({...initialState}))
       .catch(err => {
         this.setState({ loading: false, error: true, errorText: err.message });
@@ -46,9 +57,10 @@ class SetVehicleType extends Component {
   render() {
     const { vehicles } = this.props;
     const { vehicleAddress, vehicleType, loading, error, errorText } = this.state;
+    const formStyles = loading ? { opacity: 0.35 } : { opacity: 1 };
     return (
       <div className="bs-component">
-        <form onSubmit={this.onSubmitNewVehicle}>
+        <form onSubmit={this.onSubmitNewVehicle} style={formStyles}>
           <legend>Set Vehicle Type</legend>
           <div className="form-group">
             <label htmlFor="selectVehicleAccount">Select Vehicle Account:</label>

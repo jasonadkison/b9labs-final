@@ -11,13 +11,15 @@ import Vehicle from './vehicle';
 import Tollbooth from './tollbooth';
 
 class App extends Component {
-  renderContent() {
+  renderWeb3() {
     if (this.props.ethereum.initializing) {
       return <div>Initializing web3</div>;
     }
     if (this.props.ethereum.initializationError) {
       return <div>Failed to initialize web3: {this.props.ethereum.initializationError}</div>;
     }
+  }
+  renderContent() {
     return (
       <Fragment>
         <Route exact path="/" component={Regulator} />
@@ -33,6 +35,7 @@ class App extends Component {
         <Fragment>
           <Nav />
           <div className="container">
+            {this.renderWeb3()}
             {this.renderContent()}
           </div>
         </Fragment>
